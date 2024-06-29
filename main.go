@@ -5,23 +5,33 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-)
+	"path/filepath"
 
-var (
-	inputFile  = "demo/input.txt"
-	tokenFile  = "demo/token.json"
-	astFile    = "demo/ast.txt"
-	outputFile = "demo/output.txt"
+	. "github.com/piex/govaluate-tool/parser"
 )
 
 func main() {
+	runDemo("01")
+	runDemo("02")
+	runDemo("03")
+	runDemo("04")
+}
+
+func runDemo(path string) {
+	basePath := "demo"
+
+	inputFile := filepath.Join(basePath, path, "input.txt")
+	tokenFile := filepath.Join(basePath, path, "token.json")
+	astFile := filepath.Join(basePath, path, "ast.json")
+	outputFile := filepath.Join(basePath, path, "output.txt")
+
 	expression, err := os.ReadFile(inputFile)
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
 
-	tokens, _ := parseTokens(string(expression), map[string]ExpressionFunction{
+	tokens, _ := ParseTokens(string(expression), map[string]ExpressionFunction{
 		"mapGet": {
 			Name:       "mapGet",
 			Parameters: []string{},
@@ -70,7 +80,7 @@ func main() {
 		return
 	}
 
-	code := generate(ast, 0)
+	code := Generate(ast)
 	err = os.WriteFile(outputFile, []byte(code), 0644)
 	if err != nil {
 		fmt.Println("Error writing to file:", err)
