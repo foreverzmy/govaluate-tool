@@ -1,0 +1,1 @@
+mapGet( [data], 'industry_data.marketing.need_request_new_user_card' ) == true || !isNil( mapGet( [data], 'industry_data.marketing.new_user_channel_struct' ) )

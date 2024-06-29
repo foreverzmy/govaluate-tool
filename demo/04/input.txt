@@ -1,0 +1,15 @@
+mapGet( [data], 'industry_biz_type', 0 ) != 900
+&& mapGet( [data], 'product_detail.product.product_type', 0 ) != 18
+&& (
+  !isNil( mapGet( [data], 'product_detail.product.product_attr.usage_item.usage_pic' ) )
+)
+&& mapGet( [data], 'product_detail.product.product_type', 0 ) != 14
+&& (
+  !mapGet( [biz_params], 'from_poi', '0' ) == '1'
+)
+&& (
+  !(
+    ( mapGet( [data], 'industry_biz_type', 0 ) in ( 2, 40 ) )
+    && mapGet( [data], 'product_detail.product.product_type', 0 ) == 12
+  )
+)
