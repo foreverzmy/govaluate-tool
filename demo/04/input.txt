@@ -1,15 +1,15 @@
-mapGet( [data], 'industry_biz_type', 0 ) != 900
-&& mapGet( [data], 'product_detail.product.product_type', 0 ) != 18
+mapGet( [data], 'a.b.c', 0 ) != 900
+&& mapGet( [data], 'a.b.c', 0 ) != 18
 && (
-  !isNil( mapGet( [data], 'product_detail.product.product_attr.usage_item.usage_pic' ) )
+  !isNil( mapGet( [data], 'x.y.z' ) )
 )
-&& mapGet( [data], 'product_detail.product.product_type', 0 ) != 14
+&& mapGet( [data], 'd.e.f', 0 ) != 14
 && (
-  !mapGet( [biz_params], 'from_poi', '0' ) == '1'
+  !mapGet( [params], 'h', '0' ) == '1'
 )
 && (
   !(
-    ( mapGet( [data], 'industry_biz_type', 0 ) in ( 2, 40 ) )
-    && mapGet( [data], 'product_detail.product.product_type', 0 ) == 12
+    ( mapGet( [data], 'j', 0 ) in ( 2, 40 ) )
+    && mapGet( [data], 'j.k.s', 0 ) == 12
   )
 )

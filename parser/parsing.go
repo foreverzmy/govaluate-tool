@@ -11,7 +11,6 @@ import (
 )
 
 func ParseTokens(expression string, functions map[string]ExpressionFunction) ([]ExpressionToken, error) {
-
 	var ret []ExpressionToken
 	var token ExpressionToken
 	var stream *lexerStream
@@ -71,6 +70,8 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 	// symbols are anything non-alphanumeric
 	// all others read into a buffer until they reach the end of the stream
 	for stream.canRead() {
+		position := stream.position
+		ret.Start = position
 
 		character = stream.readCharacter()
 
@@ -92,7 +93,7 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 
 					if err != nil {
 						errorMsg := fmt.Sprintf("Unable to parse hex value '%v' to uint64\n", tokenString)
-						return ExpressionToken{}, errors.New(errorMsg), false
+						return ExpressionToken{Start: position, End: stream.position}, errors.New(errorMsg), false
 					}
 
 					kind = NUMERIC
@@ -108,7 +109,7 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 
 			if err != nil {
 				errorMsg := fmt.Sprintf("Unable to parse numeric value '%v' to float64\n", tokenString)
-				return ExpressionToken{}, errors.New(errorMsg), false
+				return ExpressionToken{Start: position, End: stream.position}, errors.New(errorMsg), false
 			}
 			kind = NUMERIC
 			break
@@ -130,7 +131,7 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 			tokenString = fmt.Sprintf("%s", tokenValue)
 
 			if !completed {
-				return ExpressionToken{}, errors.New("Unclosed parameter bracket"), false
+				return ExpressionToken{Start: position, End: stream.position}, errors.New("Unclosed parameter bracket"), false
 			}
 
 			// above method normally rewinds us to the closing bracket, which we want to skip.
@@ -182,7 +183,7 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 				// check that it doesn't end with a hanging period
 				if tokenString[len(tokenString)-1] == '.' {
 					errorMsg := fmt.Sprintf("Hanging accessor on token '%s'", tokenString)
-					return ExpressionToken{}, errors.New(errorMsg), false
+					return ExpressionToken{Start: position, End: stream.position}, errors.New(errorMsg), false
 				}
 
 				kind = ACCESSOR
@@ -196,7 +197,7 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 
 					if unicode.ToUpper(firstCharacter) != firstCharacter {
 						errorMsg := fmt.Sprintf("Unable to access unexported field '%s' in token '%s'", splits[i], tokenString)
-						return ExpressionToken{}, errors.New(errorMsg), false
+						return ExpressionToken{Start: position, End: stream.position}, errors.New(errorMsg), false
 					}
 				}
 			}
@@ -207,7 +208,7 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 			tokenValue, completed = readUntilFalse(stream, true, false, true, isNotQuote)
 
 			if !completed {
-				return ExpressionToken{}, errors.New("Unclosed string literal"), false
+				return ExpressionToken{Start: position, End: stream.position}, errors.New("Unclosed string literal"), false
 			}
 
 			// advance the stream one position, since reading until false assumes the terminator is a real token
@@ -286,7 +287,8 @@ func readToken(stream *lexerStream, state lexerState, functions map[string]Expre
 
 	ret.Kind = kind
 	ret.Value = tokenValue
-	ret.Content = tokenString
+	ret.Raw = tokenString
+	ret.End = stream.position
 
 	return ret, nil, (kind != UNKNOWN)
 }

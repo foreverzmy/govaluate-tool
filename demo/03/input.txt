@@ -1,8 +1,8 @@
-mapGet( [data], 'industry_biz_type', 0 ) != 900
+mapGet( [data], 'a.b.c', 0 ) > 900
 && (
   !(
-    mapGet( [biz_params], 'from_poi', '0' ) == '0'
-    || mapGet( [_order], 'poi_applyshop_commerce', '2' ) in ( '1', '2' )
+    mapGet( [params], 'd', '0' ) == '0'
+    || mapGet( [data], 'f', '2' ) in ( '1', '2' )
   )
 )
-&& mapGet( [data], 'product_detail.product.product_type', 0 ) != 18
+&& mapGet( [data], 'x.y.z', 0 ) != 18

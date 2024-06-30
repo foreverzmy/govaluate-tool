@@ -15,13 +15,11 @@ type lexerState struct {
 // lexer states.
 // Constant for all purposes except compiler.
 var validLexerStates = []lexerState{
-
 	lexerState{
 		kind:       UNKNOWN,
 		isEOF:      false,
 		isNullable: true,
 		validNextKinds: []TokenKind{
-
 			PREFIX,
 			NUMERIC,
 			BOOLEAN,
@@ -36,12 +34,10 @@ var validLexerStates = []lexerState{
 	},
 
 	lexerState{
-
 		kind:       CLAUSE,
 		isEOF:      false,
 		isNullable: true,
 		validNextKinds: []TokenKind{
-
 			PREFIX,
 			NUMERIC,
 			BOOLEAN,
@@ -57,12 +53,10 @@ var validLexerStates = []lexerState{
 	},
 
 	lexerState{
-
 		kind:       CLAUSE_CLOSE,
 		isEOF:      true,
 		isNullable: true,
 		validNextKinds: []TokenKind{
-
 			COMPARATOR,
 			MODIFIER,
 			NUMERIC,
@@ -78,14 +72,11 @@ var validLexerStates = []lexerState{
 			SEPARATOR,
 		},
 	},
-
 	lexerState{
-
 		kind:       NUMERIC,
 		isEOF:      true,
 		isNullable: false,
 		validNextKinds: []TokenKind{
-
 			MODIFIER,
 			COMPARATOR,
 			LOGICALOP,
@@ -95,12 +86,10 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       BOOLEAN,
 		isEOF:      true,
 		isNullable: false,
 		validNextKinds: []TokenKind{
-
 			MODIFIER,
 			COMPARATOR,
 			LOGICALOP,
@@ -110,12 +99,10 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       STRING,
 		isEOF:      true,
 		isNullable: false,
 		validNextKinds: []TokenKind{
-
 			MODIFIER,
 			COMPARATOR,
 			LOGICALOP,
@@ -125,12 +112,10 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       TIME,
 		isEOF:      true,
 		isNullable: false,
 		validNextKinds: []TokenKind{
-
 			MODIFIER,
 			COMPARATOR,
 			LOGICALOP,
@@ -139,12 +124,10 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       PATTERN,
 		isEOF:      true,
 		isNullable: false,
 		validNextKinds: []TokenKind{
-
 			MODIFIER,
 			COMPARATOR,
 			LOGICALOP,
@@ -153,7 +136,6 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       VARIABLE,
 		isEOF:      true,
 		isNullable: false,
@@ -168,7 +150,6 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       MODIFIER,
 		isEOF:      false,
 		isNullable: false,
@@ -186,12 +167,10 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       COMPARATOR,
 		isEOF:      false,
 		isNullable: false,
 		validNextKinds: []TokenKind{
-
 			PREFIX,
 			NUMERIC,
 			BOOLEAN,
@@ -206,12 +185,10 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       LOGICALOP,
 		isEOF:      false,
 		isNullable: false,
 		validNextKinds: []TokenKind{
-
 			PREFIX,
 			NUMERIC,
 			BOOLEAN,
@@ -225,12 +202,10 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       PREFIX,
 		isEOF:      false,
 		isNullable: false,
 		validNextKinds: []TokenKind{
-
 			NUMERIC,
 			BOOLEAN,
 			VARIABLE,
@@ -240,14 +215,11 @@ var validLexerStates = []lexerState{
 			CLAUSE_CLOSE,
 		},
 	},
-
 	lexerState{
-
 		kind:       TERNARY,
 		isEOF:      false,
 		isNullable: false,
 		validNextKinds: []TokenKind{
-
 			PREFIX,
 			NUMERIC,
 			BOOLEAN,
@@ -261,7 +233,6 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       FUNCTION,
 		isEOF:      false,
 		isNullable: false,
@@ -270,7 +241,6 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       ACCESSOR,
 		isEOF:      true,
 		isNullable: false,
@@ -285,12 +255,10 @@ var validLexerStates = []lexerState{
 		},
 	},
 	lexerState{
-
 		kind:       SEPARATOR,
 		isEOF:      false,
 		isNullable: true,
 		validNextKinds: []TokenKind{
-
 			PREFIX,
 			NUMERIC,
 			BOOLEAN,

@@ -1,1 +1,1 @@
-mapGet( [data], 'need_block_related_recommend', false )
+mapGet( [data], 'a.b.c', false )

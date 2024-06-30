@@ -10,7 +10,7 @@ type TokenKind int
 const (
 	UNKNOWN TokenKind = iota
 
-	PREFIX
+	PREFIX // 非
 	NUMERIC
 	BOOLEAN
 	STRING

@@ -264,7 +264,7 @@ func (p *Parser) parseTernary() (*ASTNode, error) {
 		return nil, err
 	}
 
-	if p.peek() == nil || p.peek().Kind != TERNARY || p.peek().Content != "?" {
+	if p.peek() == nil || p.peek().Kind != TERNARY || p.peek().Raw != "?" {
 		return nil, fmt.Errorf("expected '?' for ternary operator")
 	}
 	p.next() // consume '?'
@@ -274,7 +274,7 @@ func (p *Parser) parseTernary() (*ASTNode, error) {
 		return nil, err
 	}
 
-	if p.peek() == nil || p.peek().Kind != TERNARY || p.peek().Content != ":" {
+	if p.peek() == nil || p.peek().Kind != TERNARY || p.peek().Raw != ":" {
 		return nil, fmt.Errorf("expected ':' in ternary operator")
 	}
 	p.next() // consume ':'
@@ -284,7 +284,7 @@ func (p *Parser) parseTernary() (*ASTNode, error) {
 		return nil, err
 	}
 
-	node := newASTNode(&ExpressionToken{Kind: TERNARY, Content: "?:", Value: nil})
+	node := newASTNode(&ExpressionToken{Kind: TERNARY, Raw: "?:", Value: nil})
 	node.Children = append(node.Children, condition, trueExpr, falseExpr)
 
 	return node, nil

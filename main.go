@@ -15,6 +15,7 @@ func main() {
 	runDemo("02")
 	runDemo("03")
 	runDemo("04")
+	runDemo("05")
 }
 
 func runDemo(path string) {
@@ -42,8 +43,8 @@ func runDemo(path string) {
 			Parameters: []string{},
 			ReturnType: "",
 		},
-		"getAbUidInt64": {
-			Name:       "getAbUidInt64",
+		"getValue": {
+			Name:       "getValue",
 			Parameters: []string{},
 			ReturnType: "",
 		},
@@ -80,7 +81,7 @@ func runDemo(path string) {
 		return
 	}
 
-	code := Generate(ast)
+	code := ast.Generate()
 	err = os.WriteFile(outputFile, []byte(code), 0644)
 	if err != nil {
 		fmt.Println("Error writing to file:", err)
