@@ -1,0 +1,14 @@
+(
+  mapGet( [params], 'a.b.c', '0' ) == '1'
+  || 
+  mapGet( [data], 'x.y.z', 0 ) != 14
+)
+&& (
+  mapGet( [params], 'd', '0' ) == '1'
+  && mapGet( [data], 'e.f.g', 0 ) == 14
+  && (
+    getValue( [ctx], 'app', 'id', 0 ) == 1
+    && getValue( [ctx], 'app', 'id', 0 ) == 2
+  )
+  && !mapGet( [params], 'b', false )
+)
