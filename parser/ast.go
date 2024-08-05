@@ -26,18 +26,27 @@ func (ast *ASTNode) generateWithIndent(indent int) string {
 
 	switch ast.Token.Kind {
 	case PREFIX:
-		children := ast.Children[0].generateWithIndent(indent + 1)
+		childIndent := indent
+		isChildrenClause := ast.Children[0].Token.Kind == CLAUSE
+		if !isChildrenClause {
+			childIndent = indent + 1
+		}
+		children := ast.Children[0].generateWithIndent(childIndent)
+		multiLine := strings.Contains(children, "&&") || strings.Contains(children, "||") || strings.Contains(children, "!")
+		sb.WriteString(indentation)
 		sb.WriteString(ast.Token.Raw)
-		sb.WriteString("( ")
-		if len(children) > 100 {
+		if multiLine && !isChildrenClause {
+			sb.WriteString("( ")
+			sb.WriteString("\n")
+			sb.WriteString(children)
+		} else {
+			sb.WriteString(strings.TrimLeft(children, " "))
+		}
+		if multiLine && !isChildrenClause {
 			sb.WriteString("\n")
 			sb.WriteString(indentation)
+			sb.WriteString(")")
 		}
-		sb.WriteString(children)
-		if len(children) > 100 {
-			sb.WriteString("\n")
-		}
-		sb.WriteString(")")
 	case NUMERIC, BOOLEAN:
 		sb.WriteString(ast.Token.Raw)
 	case STRING:
@@ -47,6 +56,7 @@ func (ast *ASTNode) generateWithIndent(indent int) string {
 	case VARIABLE:
 		sb.WriteString(fmt.Sprintf("[%s]", ast.Token.Raw))
 	case FUNCTION:
+		sb.WriteString(indentation)
 		sb.WriteString(ast.Token.Raw)
 		sb.WriteString("( ")
 		for i, child := range ast.Children {
@@ -65,44 +75,49 @@ func (ast *ASTNode) generateWithIndent(indent int) string {
 		sb.WriteString(" ")
 		sb.WriteString(ast.Children[1].generateWithIndent(indent))
 	case LOGICALOP:
-		isLeftLogical := ast.Children[0].Token.Kind == LOGICALOP
-		isRightLogical := ast.Children[1].Token.Kind == LOGICALOP
+		// isLeftLogical := ast.Children[0].Token.Kind == LOGICALOP
+		// isRightLogical := ast.Children[1].Token.Kind == LOGICALOP
 		leftIndent := indent
 		rightIndent := indent
-		if isLeftLogical {
-			leftIndent = leftIndent + 1
-		}
-		if isRightLogical {
-			rightIndent = rightIndent + 1
-		}
+		// if isLeftLogical {
+		// 	leftIndent = leftIndent + 1
+		// }
+		// if isRightLogical {
+		// 	rightIndent = rightIndent + 1
+		// }
 		left := ast.Children[0].generateWithIndent(leftIndent)
 		right := ast.Children[1].generateWithIndent(rightIndent)
-		sb.WriteString(indentation)
-		if isLeftLogical {
-			sb.WriteString("(\n")
-		}
+		// sb.WriteString(indentation)
+		// if isLeftLogical {
+		// 	sb.WriteString("(\n")
+		// }
 		sb.WriteString(left)
 		sb.WriteString("\n")
-		if isLeftLogical {
-			sb.WriteString(indentation)
-			sb.WriteString(")\n")
-		}
+		// if isLeftLogical {
+		// 	sb.WriteString(indentation)
+		// 	sb.WriteString(")\n")
+		// }
 		sb.WriteString(indentation)
 		sb.WriteString(ast.Token.Value.(string))
 		sb.WriteString("\n")
-		sb.WriteString(indentation)
-		if isRightLogical {
-			sb.WriteString("(\n")
-		}
+		// sb.WriteString(indentation)
+		// if isRightLogical {
+		// 	sb.WriteString("(\n")
+		// }
 		sb.WriteString(right)
-		if isRightLogical {
-			sb.WriteString("\n")
-			sb.WriteString(indentation)
-			sb.WriteString(")")
-		}
+		// if isRightLogical {
+		// 	sb.WriteString("\n")
+		// 	sb.WriteString(indentation)
+		// 	sb.WriteString(")")
+		// }
 	case MODIFIER:
 	case CLAUSE:
-		sb.WriteString("(")
+		sb.WriteString(indentation)
+		sb.WriteString("(\n")
+		sb.WriteString(ast.Children[0].generateWithIndent(indent + 1))
+		sb.WriteString("\n")
+		sb.WriteString(indentation)
+		sb.WriteString(")")
 	case CLAUSE_CLOSE:
 		sb.WriteString(")")
 	case TERNARY:

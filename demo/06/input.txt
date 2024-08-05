@@ -1,0 +1,17 @@
+mapGet([data], "d.p.t", 0) == 14 &&
+  ((mapGet(
+    [data],
+    "d.p.a.d.s",
+    1
+  ) != 2 &&
+    mapGet([params], "h", false)) ||
+
+(!mapGet([params], "h", false) &&
+      mapGet(
+        [data],
+        "d.p.a.d.s",
+        1
+      ) == 2 &&
+      getAbUidStr([ctx], "d", "d", "0") == "2")
+
+    );

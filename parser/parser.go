@@ -1,6 +1,9 @@
 package parser
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 func newASTNode(token *ExpressionToken) *ASTNode {
 	return &ASTNode{Token: token, Children: []*ASTNode{}}
@@ -31,6 +34,8 @@ func (p *Parser) parseExpression(precedence int) (*ASTNode, error) {
 			break
 		}
 
+		log.Printf("parseExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+
 		tokenPrecedence := p.getPrecedence(token)
 		if tokenPrecedence < precedence {
 			break
@@ -52,6 +57,8 @@ func (p *Parser) parseExpression(precedence int) (*ASTNode, error) {
 func (p *Parser) parseBinaryExpression(left *ASTNode, precedence int) (*ASTNode, error) {
 	token := p.peek()
 
+	log.Printf("parseBinaryExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+
 	switch token.Kind {
 	case LOGICALOP:
 		return p.parseLogicalOp(left, precedence)
@@ -68,6 +75,8 @@ func (p *Parser) parsePrimaryExpression() (*ASTNode, error) {
 	if token == nil {
 		return nil, fmt.Errorf("unexpected end of tokens")
 	}
+
+	log.Printf("parsePrimaryExpression peek token: %s, kind %s, start %d, end %d\n", token.Raw, token.Kind.String(), token.Start, token.End)
 
 	switch token.Kind {
 	case PREFIX:
@@ -105,10 +114,12 @@ func (p *Parser) parsePrefix() (*ASTNode, error) {
 		return nil, fmt.Errorf("expected prefix token, got %v", token)
 	}
 
+	log.Printf("parsePrefix peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+
 	node := newASTNode(token)
 
 	// Parse the following expression after the prefix
-	expr, err := p.parseExpression(0)
+	expr, err := p.parsePrimaryExpression()
 	if err != nil {
 		return nil, err
 	}
@@ -291,9 +302,12 @@ func (p *Parser) parseTernary() (*ASTNode, error) {
 }
 
 func (p *Parser) parseClause() (*ASTNode, error) {
-	if err := p.expectToken(CLAUSE); err != nil {
-		return nil, err
+	token := p.next()
+	if token.Kind != CLAUSE {
+		return nil, fmt.Errorf("expected %v token, got %v", CLAUSE, token)
 	}
+
+	log.Printf("parseClause\n")
 
 	expr, err := p.parseExpression(0)
 	if err != nil {
@@ -304,7 +318,10 @@ func (p *Parser) parseClause() (*ASTNode, error) {
 		return nil, err
 	}
 
-	return expr, nil
+	node := newASTNode(token)
+	node.Children = append(node.Children, expr)
+
+	return node, nil
 }
 
 func (p *Parser) parseClauseOrArray() (*ASTNode, error) {
@@ -360,6 +377,8 @@ func (p *Parser) parseToken(expected TokenKind) (*ASTNode, error) {
 	if token.Kind != expected {
 		return nil, fmt.Errorf("expected %v token, got %v", expected, token)
 	}
+
+	log.Printf("parseToken expected %s token: %s, start %d end %d\n", expected, token.Raw, token.Start, token.End)
 
 	return newASTNode(token), nil
 }

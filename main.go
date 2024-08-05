@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -11,11 +12,20 @@ import (
 )
 
 func main() {
+	// 创建一个日志文件
+	file, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
+	if err != nil {
+		log.Fatalf("无法打开日志文件: %v", err)
+	}
+	defer file.Close()
+	log.SetOutput(file)
+
 	runDemo("01")
 	runDemo("02")
 	runDemo("03")
 	runDemo("04")
 	runDemo("05")
+	runDemo("06")
 }
 
 func runDemo(path string) {
@@ -50,6 +60,11 @@ func runDemo(path string) {
 		},
 		"StrLen": {
 			Name:       "StrLen",
+			Parameters: []string{},
+			ReturnType: "",
+		},
+		"getAbUidStr": {
+			Name:       "getAbUidStr",
 			Parameters: []string{},
 			ReturnType: "",
 		},
