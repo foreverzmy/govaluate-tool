@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"log"
 )
 
 func newASTNode(token *ExpressionToken) *ASTNode {
@@ -34,7 +33,7 @@ func (p *Parser) parseExpression(precedence int) (*ASTNode, error) {
 			break
 		}
 
-		log.Printf("parseExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+		// log.Printf("parseExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
 
 		tokenPrecedence := p.getPrecedence(token)
 		if tokenPrecedence < precedence {
@@ -57,7 +56,7 @@ func (p *Parser) parseExpression(precedence int) (*ASTNode, error) {
 func (p *Parser) parseBinaryExpression(left *ASTNode, precedence int) (*ASTNode, error) {
 	token := p.peek()
 
-	log.Printf("parseBinaryExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+	// log.Printf("parseBinaryExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
 
 	switch token.Kind {
 	case LOGICALOP:
@@ -76,7 +75,7 @@ func (p *Parser) parsePrimaryExpression() (*ASTNode, error) {
 		return nil, fmt.Errorf("unexpected end of tokens")
 	}
 
-	log.Printf("parsePrimaryExpression peek token: %s, kind %s, start %d, end %d\n", token.Raw, token.Kind.String(), token.Start, token.End)
+	// log.Printf("parsePrimaryExpression peek token: %s, kind %s, start %d, end %d\n", token.Raw, token.Kind.String(), token.Start, token.End)
 
 	switch token.Kind {
 	case PREFIX:
@@ -114,7 +113,7 @@ func (p *Parser) parsePrefix() (*ASTNode, error) {
 		return nil, fmt.Errorf("expected prefix token, got %v", token)
 	}
 
-	log.Printf("parsePrefix peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+	// log.Printf("parsePrefix peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
 
 	node := newASTNode(token)
 
@@ -307,7 +306,7 @@ func (p *Parser) parseClause() (*ASTNode, error) {
 		return nil, fmt.Errorf("expected %v token, got %v", CLAUSE, token)
 	}
 
-	log.Printf("parseClause\n")
+	// log.Printf("parseClause\n")
 
 	expr, err := p.parseExpression(0)
 	if err != nil {
@@ -378,7 +377,7 @@ func (p *Parser) parseToken(expected TokenKind) (*ASTNode, error) {
 		return nil, fmt.Errorf("expected %v token, got %v", expected, token)
 	}
 
-	log.Printf("parseToken expected %s token: %s, start %d end %d\n", expected, token.Raw, token.Start, token.End)
+	// log.Printf("parseToken expected %s token: %s, start %d end %d\n", expected, token.Raw, token.Start, token.End)
 
 	return newASTNode(token), nil
 }
