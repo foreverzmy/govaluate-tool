@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"log"
 )
 
 func newASTNode(token *ExpressionToken) *ASTNode {
@@ -34,7 +33,7 @@ func (p *Parser) parseExpression(precedence int) (*ASTNode, error) {
 			break
 		}
 
-		log.Printf("parseExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+		// log.Printf("parseExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
 
 		tokenPrecedence := p.getPrecedence(token)
 		if tokenPrecedence < precedence {
@@ -57,7 +56,7 @@ func (p *Parser) parseExpression(precedence int) (*ASTNode, error) {
 func (p *Parser) parseBinaryExpression(left *ASTNode, precedence int) (*ASTNode, error) {
 	token := p.peek()
 
-	log.Printf("parseBinaryExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+	// log.Printf("parseBinaryExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
 
 	switch token.Kind {
 	case LOGICALOP:
@@ -66,7 +65,7 @@ func (p *Parser) parseBinaryExpression(left *ASTNode, precedence int) (*ASTNode,
 		return p.parseComparator(left, precedence)
 	default:
 		// node, err = p.parseExpression(precedence + 1)
-		log.Fatalf("parseBinaryExpression unexpected token: %v", token)
+		// log.Fatalf("parseBinaryExpression unexpected token: %v", token)
 		return left, fmt.Errorf("parseBinaryExpression unexpected token: %v", token)
 	}
 }
@@ -360,8 +359,11 @@ func (p *Parser) parseClauseOrArray() (*ASTNode, error) {
 		// 判断是否为分隔符，如果是，则继续解析下一个元素
 		if p.peek().Kind == SEPARATOR {
 			p.next() // consume ','
+			if !isArray {
+				array.Children = append(array.Children, node)
+			}
 			isArray = true
-			array.Children = append(array.Children, node)
+
 			continue
 		}
 

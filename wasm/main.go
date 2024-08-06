@@ -9,7 +9,7 @@ import (
 
 func main() {
 	console := js.Global().Get("console")
-	console.Call("log", "WASM Go Initialized version 0.0.1-alpha.8")
+	console.Call("log", "WASM Go Initialized version 0.0.2")
 	c := make(chan struct{}, 0)
 	registerCallbacks()
 	<-c
