@@ -26,6 +26,7 @@ func main() {
 	runDemo("04")
 	runDemo("05")
 	runDemo("06")
+	runDemo("07")
 }
 
 func runDemo(path string) {
@@ -65,6 +66,11 @@ func runDemo(path string) {
 		},
 		"getAbUidStr": {
 			Name:       "getAbUidStr",
+			Parameters: []string{},
+			ReturnType: "",
+		},
+		"JSONUnmarshal": {
+			Name:       "JSONUnmarshal",
 			Parameters: []string{},
 			ReturnType: "",
 		},

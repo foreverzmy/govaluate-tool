@@ -30,33 +30,8 @@ func registerCallbacks() {
 func format(this js.Value, args []js.Value) interface{} {
 	expression := args[0].String()
 
-	tokens, _ := ParseTokens(expression, map[string]ExpressionFunction{
-		"mapGet": {
-			Name:       "mapGet",
-			Parameters: []string{},
-			ReturnType: "",
-		},
-		"isNil": {
-			Name:       "isNil",
-			Parameters: []string{},
-			ReturnType: "",
-		},
-		"getValue": {
-			Name:       "getValue",
-			Parameters: []string{},
-			ReturnType: "",
-		},
-		"StrLen": {
-			Name:       "StrLen",
-			Parameters: []string{},
-			ReturnType: "",
-		},
-		"getAbUidStr": {
-			Name:       "getAbUidStr",
-			Parameters: []string{},
-			ReturnType: "",
-		},
-	})
+	functions := convertJsValueToFuncMap(args[1])
+	tokens, _ := ParseTokens(expression, functions)
 
 	parser := NewParser(tokens)
 	ast, err := parser.Parse()
@@ -67,4 +42,24 @@ func format(this js.Value, args []js.Value) interface{} {
 	code := ast.Generate()
 
 	return js.ValueOf(code)
+}
+
+func convertJsValueToFuncMap(functions js.Value) map[string]ExpressionFunction {
+	funcMap := make(map[string]ExpressionFunction)
+	keys := js.Global().Get("Object").Call("keys", functions)
+	length := keys.Length()
+	for i := 0; i < length; i++ {
+		key := keys.Index(i).String()
+		funcDef := functions.Get(key)
+		parameters := make([]string, funcDef.Get("parameters").Length())
+		for j := 0; j < funcDef.Get("parameters").Length(); j++ {
+			parameters[j] = funcDef.Get("parameters").Index(j).String()
+		}
+		funcMap[key] = ExpressionFunction{
+			Name:       key,
+			Parameters: parameters,
+			ReturnType: funcDef.Get("returnType").String(),
+		}
+	}
+	return funcMap
 }

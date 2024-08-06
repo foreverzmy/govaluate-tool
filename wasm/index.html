@@ -451,17 +451,24 @@
       const go = new GoWasm();
       WebAssembly.instantiateStreaming(fetch(WASM_URL),  go.importObject)
         .then((result) => {
-          console.log('----------start----------');
-          console.log(result.instance);
-          console.log('===========end===========');
           go.run(result.instance);
         });
 
       function runFormat() {
-        const expression = "mapGet( [data], 'a.b.c' ) == true || !isNil( mapGet( [data], 'd.e' ) )";
+        const expression = `!isNil(mapGet(
+  JSONUnmarshal( mapGet( [data], 'banner.task_info' ) ),
+  'outside_reward_coin_banner'
+))`;
         const formatFunc = go.global.globalWasmFunc?.format;
         if (formatFunc) {
-            const result = formatFunc(expression);
+            const result = formatFunc(expression, {
+							"mapGet": {parameters:[],returnType:""},
+							"isNil": {parameters:[],returnType:""},
+							"getValue": {parameters:[],returnType:""},
+							"StrLen": {parameters:[],returnType:""},
+							"getAbUidStr": {parameters:[],returnType:""},
+							"JSONUnmarshal": {parameters:[],returnType:""},
+						});
             console.log('----------start----------');
             console.log(result);
             console.log('===========end===========');

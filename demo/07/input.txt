@@ -1,0 +1,4 @@
+!isNil(mapGet(
+  JSONUnmarshal( mapGet( [data], 'b.t' ) ),
+  'o'
+))
