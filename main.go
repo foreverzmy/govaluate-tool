@@ -20,13 +20,14 @@ func main() {
 	defer file.Close()
 	log.SetOutput(file)
 
-	runDemo("01")
-	runDemo("02")
-	runDemo("03")
-	runDemo("04")
-	runDemo("05")
-	runDemo("06")
+	// runDemo("01")
+	// runDemo("02")
+	// runDemo("03")
+	// runDemo("04")
+	// runDemo("05")
+	// runDemo("06")
 	runDemo("07")
+	runDemo("08")
 }
 
 func runDemo(path string) {
@@ -66,6 +67,11 @@ func runDemo(path string) {
 		},
 		"getAbUidStr": {
 			Name:       "getAbUidStr",
+			Parameters: []string{},
+			ReturnType: "",
+		},
+		"getAbUidInt64": {
+			Name:       "getAbUidInt64",
 			Parameters: []string{},
 			ReturnType: "",
 		},

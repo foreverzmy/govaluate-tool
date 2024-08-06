@@ -68,6 +68,11 @@ func (ast *ASTNode) generateWithIndent(indent int) string {
 		sb.WriteString(" )")
 	case SEPARATOR:
 	case ACCESSOR:
+		sb.WriteString(indentation)
+		sb.WriteString(strings.Join(ast.Token.Value.([]string), "."))
+		if len(ast.Children) > 0 && ast.Children[0].Token.Kind == CLAUSE {
+			sb.WriteString("()")
+		}
 	case COMPARATOR:
 		sb.WriteString(ast.Children[0].generateWithIndent(indent))
 		sb.WriteString(" ")

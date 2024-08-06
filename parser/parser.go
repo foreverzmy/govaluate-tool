@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"log"
 )
 
 func newASTNode(token *ExpressionToken) *ASTNode {
@@ -33,7 +34,7 @@ func (p *Parser) parseExpression(precedence int) (*ASTNode, error) {
 			break
 		}
 
-		// log.Printf("parseExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+		log.Printf("parseExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
 
 		tokenPrecedence := p.getPrecedence(token)
 		if tokenPrecedence < precedence {
@@ -56,7 +57,7 @@ func (p *Parser) parseExpression(precedence int) (*ASTNode, error) {
 func (p *Parser) parseBinaryExpression(left *ASTNode, precedence int) (*ASTNode, error) {
 	token := p.peek()
 
-	// log.Printf("parseBinaryExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
+	log.Printf("parseBinaryExpression peek token: %s, start %d end %d\n", token.Raw, token.Start, token.End)
 
 	switch token.Kind {
 	case LOGICALOP:
@@ -65,6 +66,7 @@ func (p *Parser) parseBinaryExpression(left *ASTNode, precedence int) (*ASTNode,
 		return p.parseComparator(left, precedence)
 	default:
 		// node, err = p.parseExpression(precedence + 1)
+		log.Fatalf("parseBinaryExpression unexpected token: %v", token)
 		return left, fmt.Errorf("parseBinaryExpression unexpected token: %v", token)
 	}
 }
@@ -209,6 +211,16 @@ func (p *Parser) parseAccessor() (*ASTNode, error) {
 	}
 
 	node := newASTNode(token)
+
+	ptoken := p.peek()
+	if ptoken != nil && ptoken.Kind == CLAUSE {
+		p.next()
+		if p.expectToken(CLAUSE_CLOSE) != nil {
+			return nil, fmt.Errorf("expected ')' to close accessor function")
+		}
+		node.Children = append(node.Children, newASTNode(ptoken))
+	}
+
 	return node, nil
 }
 

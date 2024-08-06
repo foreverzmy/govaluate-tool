@@ -9,7 +9,7 @@
     <h1>Go WebAssembly Example with TinyGo</h1>
     <button onclick="runFormat()">Format</button>
     <script>
-      const WASM_URL = 'https://lf3-static.bytednsdoc.com/obj/eden-cn/ufcylteh7uhbfnuptnuhog/dito/ditom/wasm/govaluate.wasm';
+      const WASM_URL = 'https://lf3-static.bytednsdoc.com/obj/eden-cn/ufcylteh7uhbfnuptnuhog/dito/ditom/wasm/test/govaluate.debug.8.wasm';
       
       class GoWasm {
 	encoder = new TextEncoder();
@@ -455,10 +455,8 @@
         });
 
       function runFormat() {
-        const expression = `!isNil(mapGet(
-  JSONUnmarshal( mapGet( [data], 'banner.task_info' ) ),
-  'outside_reward_coin_banner'
-))`;
+        const expression = `getAbUidInt64( [ctx], 'app', 'gc', 0 ) == 2
+&& !mapGet( [bp], 'h', false )&& (!(ctx.AppId() in (1,2,3,4)))`;
         const formatFunc = go.global.globalWasmFunc?.format;
         if (formatFunc) {
             const result = formatFunc(expression, {
@@ -467,8 +465,9 @@
 							"getValue": {parameters:[],returnType:""},
 							"StrLen": {parameters:[],returnType:""},
 							"getAbUidStr": {parameters:[],returnType:""},
+							"getAbUidInt64": {parameters:[],returnType:""},
 							"JSONUnmarshal": {parameters:[],returnType:""},
-						});
+						}, true);
             console.log('----------start----------');
             console.log(result);
             console.log('===========end===========');

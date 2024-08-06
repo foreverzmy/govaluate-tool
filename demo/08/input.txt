@@ -1,0 +1,2 @@
+getAbUidInt64( [ctx], 'app', 'gc', 0 ) == 2
+&& !mapGet( [bp], 'h', false )&& (!(ctx.AppId() in (1,2,3,4)))

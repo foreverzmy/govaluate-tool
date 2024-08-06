@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"syscall/js"
 
 	. "github.com/piex/govaluate-tool/parser"
@@ -8,7 +9,7 @@ import (
 
 func main() {
 	console := js.Global().Get("console")
-	console.Call("log", "WASM Go Initialized")
+	console.Call("log", "WASM Go Initialized version 0.0.1-alpha.8")
 	c := make(chan struct{}, 0)
 	registerCallbacks()
 	<-c
@@ -28,18 +29,48 @@ func registerCallbacks() {
 }
 
 func format(this js.Value, args []js.Value) interface{} {
+	console := js.Global().Get("console")
 	expression := args[0].String()
+	debug := false
+	if len(args) == 3 {
+		debug = args[2].Bool()
+	}
+	if debug {
+		console.Call("log", fmt.Sprintf("expression: %s\n", expression))
+	}
 
 	functions := convertJsValueToFuncMap(args[1])
-	tokens, _ := ParseTokens(expression, functions)
+	if debug {
+		console.Call("log", fmt.Sprintf("functions: %+v\n", functions))
+	}
+
+	tokens, err := ParseTokens(expression, functions)
+	if err != nil {
+		console.Call("error", fmt.Sprintf("tokens error: %e\n", err))
+		return js.ValueOf(map[string]string{"error": err.Error()})
+	}
+	if debug {
+		console.Call("log", fmt.Sprintf("tokens: %+v\n", tokens))
+	}
 
 	parser := NewParser(tokens)
+	if debug {
+		console.Call("log", fmt.Sprintf("NewParser: %+v\n", parser))
+	}
+
 	ast, err := parser.Parse()
 	if err != nil {
+		console.Call("error", fmt.Sprintf("parser error: %e\n", err))
 		return js.ValueOf(map[string]string{"error": err.Error()})
+	}
+	if debug {
+		console.Call("log", fmt.Sprintf("ast: %+v\n", ast))
 	}
 
 	code := ast.Generate()
+	if debug {
+		console.Call("log", fmt.Sprintf("code: %s\n", code))
+	}
 
 	return js.ValueOf(code)
 }
